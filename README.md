@@ -28,7 +28,63 @@ Cleaning up Kubernetes resources
 
 (Advanced) Managing workloads with Deployments & ReplicaSets
 
-(Advanced) Self-healing, scaling, and rolling updates
+(Advanced) Self-healing, scaling, and rolling 
+updates
+
+## 🧱 Understanding Containers Inside Pods
+
+A Kubernetes Pod is not a container itself, but a **logical wrapper around one or more containers**.
+
+Within a Pod:
+- Containers share the **same network namespace**
+  - Same IP address
+  - Same port space
+- Containers can communicate with each other using `localhost`
+- Containers can share **volumes** for data exchange
+- Containers are scheduled and managed **as a single unit**
+
+In this project, each Pod runs a single Nginx container to focus on core Pod behavior.  
+However, Kubernetes Pods are commonly used to run **multiple tightly coupled containers**, such as:
+- Application container + logging sidecar
+- Application container + metrics exporter
+
+This design explains why Pods—not containers—are the smallest deployable unit in Kubernetes.
+
+## 🏷️ Labels and Selectors in Kubernetes
+
+Labels are key–value pairs attached to Kubernetes objects such as Pods, Deployments, and Services.
+
+In this project:
+- Labels were applied to Pods to logically group related workloads
+- Selectors were used to query and filter Pods based on those labels
+
+Example use cases:
+- Targeting Pods for Services
+- Grouping Pods for Deployments and ReplicaSets
+- Filtering resources during troubleshooting
+
+Selectors enable Kubernetes controllers to dynamically manage Pods without relying on Pod names, which are ephemeral.
+
+This mechanism is fundamental to how Deployments manage ReplicaSets and how Services route traffic to Pods.
+
+## 🔄 Imperative vs Declarative Approaches in Kubernetes
+
+Kubernetes supports both imperative and declarative management styles.
+
+| Aspect | Imperative | Declarative |
+|-----|-----------|-------------|
+| How it works | Commands tell Kubernetes *what to do* | YAML defines *desired state* |
+| Example | `kubectl run nginx` | `kubectl apply -f pod.yaml` |
+| State tracking | Command history | Version-controlled files |
+| Repeatability | Low | High |
+| Production usage | Limited | Preferred |
+
+In this project:
+- The imperative approach was used initially to quickly create Pods and observe behavior.
+- The declarative approach was later adopted using YAML files to align with infrastructure-as-code best practices.
+
+This progression reflects how engineers often learn Kubernetes while still adhering to production standards.
+
 
 ## 🛠️ Tools & Technologies Used
 
